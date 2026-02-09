@@ -7,6 +7,8 @@ import kz.aitu.booksapp.data.repo.FirebaseFavoritesRepository
 import kz.aitu.booksapp.vm.*
 import org.koin.androidx.viewmodel.dsl.viewModel
 import org.koin.dsl.module
+import kz.aitu.booksapp.data.repo.remote.GoogleBooksRepository
+import kz.aitu.booksapp.vm.SearchViewModel
 
 val appModule = module {
 
@@ -16,6 +18,8 @@ val appModule = module {
     single { FirebaseCommentsRepository() }
     single { FirebaseFavoritesRepository() }
 
+    single { GoogleBooksRepository() }
+
     // viewmodels
     viewModel { MainViewModel(get()) }
     viewModel { AuthViewModel(get()) }
@@ -23,4 +27,6 @@ val appModule = module {
     viewModel { DetailsViewModel(get()) }
     viewModel { CommentsViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
+
+    viewModel { SearchViewModel(get()) }
 }

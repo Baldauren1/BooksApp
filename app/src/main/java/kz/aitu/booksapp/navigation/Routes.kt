@@ -9,6 +9,8 @@ object Routes {
     const val Comments = "comments/{bookId}"
     const val Profile = "profile"
 
+    const val Search = "search"
+
     fun details(bookId: String) = "details/$bookId"
     fun comments(bookId: String) = "comments/$bookId"
 }

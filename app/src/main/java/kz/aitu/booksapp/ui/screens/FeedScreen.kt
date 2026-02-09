@@ -23,6 +23,7 @@ fun FeedScreen(nav: NavController, vm: FeedViewModel) {
                 title = { Text("Books Feed") },
                 actions = {
                     TextButton(onClick = { nav.navigate(Routes.Profile) }) { Text("Profile") }
+                    TextButton(onClick = { nav.navigate(Routes.Search) }) { Text("Search") }
                 }
             )
         }
