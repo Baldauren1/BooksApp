@@ -1,8 +1,8 @@
 package kz.aitu.booksapp.vm
 
 import androidx.lifecycle.ViewModel
-import kz.aitu.booksapp.data.BooksRepository
-import kz.aitu.booksapp.model.Book
+import kz.aitu.booksapp.data.repo.BooksRepository
+import kz.aitu.booksapp.domain.model.Book
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 

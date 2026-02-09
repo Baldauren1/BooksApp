@@ -2,8 +2,8 @@ package kz.aitu.booksapp.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import kz.aitu.booksapp.data.FirebaseCommentsRepository
-import kz.aitu.booksapp.model.Comment
+import kz.aitu.booksapp.data.repo.FirebaseCommentsRepository
+import kz.aitu.booksapp.domain.model.Comment
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch

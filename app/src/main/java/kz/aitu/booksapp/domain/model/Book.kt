@@ -1,4 +1,4 @@
-package kz.aitu.booksapp.model
+package kz.aitu.booksapp.domain.model
 
 data class Book(
     val id: String,

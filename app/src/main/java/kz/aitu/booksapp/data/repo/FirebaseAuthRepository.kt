@@ -1,4 +1,4 @@
-package kz.aitu.booksapp.data
+package kz.aitu.booksapp.data.repo
 
 import com.google.firebase.auth.FirebaseAuth
 import kotlinx.coroutines.tasks.await
