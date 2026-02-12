@@ -6,6 +6,7 @@ import kz.aitu.booksapp.ui.screens.*
 import kz.aitu.booksapp.vm.*
 import kz.aitu.booksapp.vm.SearchViewModel
 import org.koin.androidx.compose.koinViewModel
+import android.net.Uri
 
 @Composable
 fun AppNavGraph() {
@@ -38,13 +39,13 @@ fun AppNavGraph() {
         }
 
         composable(Routes.Details) { backStack ->
-            val bookId = backStack.arguments?.getString("bookId") ?: return@composable
+            val bookId = backStack.arguments?.getString("bookId")?.let(Uri::decode) ?: return@composable
             val detailsVm: DetailsViewModel = koinViewModel()
             DetailsScreen(nav, bookId, detailsVm)
         }
 
         composable(Routes.Comments) { backStack ->
-            val bookId = backStack.arguments?.getString("bookId") ?: return@composable
+            val bookId = backStack.arguments?.getString("bookId")?.let(Uri::decode) ?: return@composable
             val commentsVm: CommentsViewModel = koinViewModel()
             CommentsScreen(nav, bookId, commentsVm)
         }
@@ -55,7 +56,7 @@ fun AppNavGraph() {
         }
 
         composable(Routes.Note) { backStack ->
-            val bookId = backStack.arguments?.getString("bookId") ?: return@composable
+            val bookId = backStack.arguments?.getString("bookId")?.let(Uri::decode) ?: return@composable
             val vm: NoteViewModel = org.koin.androidx.compose.koinViewModel()
             NoteScreen(nav, bookId, vm)
         }

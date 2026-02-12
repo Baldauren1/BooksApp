@@ -1,4 +1,5 @@
 package kz.aitu.booksapp.navigation
+import android.net.Uri
 
 object Routes {
     const val Splash = "splash"
@@ -12,8 +13,7 @@ object Routes {
     const val Search = "search"
 
     const val Note = "note/{bookId}"
-    fun note(bookId: String) = "note/$bookId"
-
-    fun details(bookId: String) = "details/$bookId"
-    fun comments(bookId: String) = "comments/$bookId"
+    fun details(bookId: String) = "details/${Uri.encode(bookId)}"
+    fun comments(bookId: String) = "comments/${Uri.encode(bookId)}"
+    fun note(bookId: String) = "note/${Uri.encode(bookId)}"
 }

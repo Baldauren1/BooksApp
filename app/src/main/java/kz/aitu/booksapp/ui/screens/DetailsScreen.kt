@@ -23,19 +23,18 @@ fun DetailsScreen(nav: NavController, bookId: String, vm: DetailsViewModel) {
             Modifier.padding(padding).padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
-            state.error?.let {
-                Text(it, color = MaterialTheme.colorScheme.error)
-                TextButton(onClick = vm::clearError) { Text("Dismiss") }
-            }
-
             if (state.loading) {
                 LinearProgressIndicator(Modifier.fillMaxWidth())
                 return@Column
             }
 
+            state.error?.let {
+                Text(it, color = MaterialTheme.colorScheme.error)
+                TextButton(onClick = vm::clearError) { Text("Dismiss") }
+            }
+
             val book = state.book
             if (book == null) {
-                Text("Book not found", color = MaterialTheme.colorScheme.error)
                 Button(onClick = { nav.popBackStack() }) { Text("Back") }
                 return@Column
             }
@@ -45,25 +44,26 @@ fun DetailsScreen(nav: NavController, bookId: String, vm: DetailsViewModel) {
             Text(book.description)
 
             Button(
-                onClick = vm::toggleFavorite,
+                onClick = { vm.toggleFavorite(book.id, !state.isFavorite) },
                 modifier = Modifier.fillMaxWidth()
             ) {
                 Text(if (state.isFavorite) "Remove from favorites" else "Add to favorites")
             }
 
             Button(
-                onClick = { nav.navigate(Routes.comments(bookId)) },
+                onClick = { nav.navigate(Routes.note(book.id)) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("Open comments (Realtime)")
+                Text("Note (Create/Edit)")
             }
 
             Button(
-                onClick = { nav.navigate(Routes.note(bookId)) },
+                onClick = { nav.navigate(Routes.comments(book.id)) },
                 modifier = Modifier.fillMaxWidth()
             ) {
-                Text("My note (Create/Edit)")
+                Text("Comments (Realtime)")
             }
         }
     }
 }
+

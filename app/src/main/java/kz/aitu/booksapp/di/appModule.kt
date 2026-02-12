@@ -71,4 +71,5 @@ val appModule = module {
     viewModel { ProfileViewModel(get(), get(), get()) } // AuthRepo, FavoritesRepo, BookDao
 
     viewModel { kz.aitu.booksapp.vm.NoteViewModel(get()) }
+    viewModel { DetailsViewModel(get(), get()) } // BookDao, FirebaseFavoritesRepository
 }
