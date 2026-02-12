@@ -8,6 +8,8 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import kz.aitu.booksapp.navigation.Routes
 import kz.aitu.booksapp.vm.DetailsViewModel
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -20,7 +22,11 @@ fun DetailsScreen(nav: NavController, bookId: String, vm: DetailsViewModel) {
         topBar = { TopAppBar(title = { Text("Details") }) }
     ) { padding ->
         Column(
-            Modifier.padding(padding).padding(16.dp),
+            modifier = Modifier
+                .padding(padding)
+                .padding(16.dp)
+                .fillMaxSize()
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ) {
             if (state.loading) {

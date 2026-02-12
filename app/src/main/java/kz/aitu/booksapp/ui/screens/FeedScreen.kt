@@ -65,7 +65,11 @@ fun FeedScreen(nav: NavController, vm: FeedViewModel) {
                         supportingContent = { Text(book.authors) },
                         modifier = Modifier
                             .fillMaxWidth()
-                            .clickable { nav.navigate(Routes.details(book.id)) }
+                            .clickable {
+                                if (book.id.isNotBlank()) {
+                                    nav.navigate(Routes.details(book.id))
+                                }
+                            }
                             .padding(horizontal = 8.dp)
                     )
                     HorizontalDivider()

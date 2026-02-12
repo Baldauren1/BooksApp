@@ -56,8 +56,8 @@ fun AppNavGraph() {
         }
 
         composable(Routes.Note) { backStack ->
-            val bookId = backStack.arguments?.getString("bookId")?.let(Uri::decode) ?: return@composable
-            val vm: NoteViewModel = org.koin.androidx.compose.koinViewModel()
+            val bookId = Uri.decode(backStack.arguments?.getString("bookId") ?: return@composable)
+            val vm: NoteViewModel = koinViewModel()
             NoteScreen(nav, bookId, vm)
         }
     }
