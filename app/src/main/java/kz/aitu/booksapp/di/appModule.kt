@@ -58,6 +58,8 @@ val appModule = module {
     single { FirebaseCommentsRepository() }
     single { FirebaseFavoritesRepository() }
 
+    single { kz.aitu.booksapp.data.repo.FirebaseNotesRepository() }
+
     // --- ViewModels ---
     viewModel { MainViewModel(get()) }
     viewModel { AuthViewModel(get()) }
@@ -68,4 +70,5 @@ val appModule = module {
     viewModel { DetailsViewModel(get(), get()) } // BooksRepository, FirebaseFavoritesRepository
     viewModel { ProfileViewModel(get(), get(), get()) } // AuthRepo, FavoritesRepo, BookDao
 
+    viewModel { kz.aitu.booksapp.vm.NoteViewModel(get()) }
 }

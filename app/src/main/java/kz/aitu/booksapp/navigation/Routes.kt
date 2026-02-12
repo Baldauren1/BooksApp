@@ -11,6 +11,9 @@ object Routes {
 
     const val Search = "search"
 
+    const val Note = "note/{bookId}"
+    fun note(bookId: String) = "note/$bookId"
+
     fun details(bookId: String) = "details/$bookId"
     fun comments(bookId: String) = "comments/$bookId"
 }

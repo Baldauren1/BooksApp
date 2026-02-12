@@ -53,5 +53,11 @@ fun AppNavGraph() {
             val vm: SearchViewModel = koinViewModel()
             SearchScreen(nav, vm)
         }
+
+        composable(Routes.Note) { backStack ->
+            val bookId = backStack.arguments?.getString("bookId") ?: return@composable
+            val vm: NoteViewModel = org.koin.androidx.compose.koinViewModel()
+            NoteScreen(nav, bookId, vm)
+        }
     }
 }

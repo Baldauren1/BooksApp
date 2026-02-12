@@ -57,6 +57,13 @@ fun DetailsScreen(nav: NavController, bookId: String, vm: DetailsViewModel) {
             ) {
                 Text("Open comments (Realtime)")
             }
+
+            Button(
+                onClick = { nav.navigate(Routes.note(bookId)) },
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text("My note (Create/Edit)")
+            }
         }
     }
 }
