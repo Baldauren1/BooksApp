@@ -2,15 +2,15 @@ package kz.aitu.booksapp.di
 
 import androidx.room.Room
 import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
+import kotlinx.serialization.json.Json
 import kz.aitu.booksapp.data.local.AppDatabase
 import kz.aitu.booksapp.data.remote.GoogleBooksApi
 import kz.aitu.booksapp.data.remote.GoogleBooksRepository
+import kz.aitu.booksapp.data.repo.FeedRepository
 import kz.aitu.booksapp.data.repo.FirebaseAuthRepository
 import kz.aitu.booksapp.data.repo.FirebaseCommentsRepository
 import kz.aitu.booksapp.data.repo.FirebaseFavoritesRepository
-import kz.aitu.booksapp.data.repo.FeedRepository
 import kz.aitu.booksapp.vm.*
-import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import org.koin.androidx.viewmodel.dsl.viewModel
@@ -19,12 +19,19 @@ import retrofit2.Retrofit
 
 val appModule = module {
 
-    //  JSON / OkHttp / Retrofit
+    // --- Room ---
     single {
-        Json {
-            ignoreUnknownKeys = true
-            isLenient = true
-        }
+        Room.databaseBuilder(
+            get(),
+            AppDatabase::class.java,
+            "booksapp.db"
+        ).build()
+    }
+    single { get<AppDatabase>().bookDao() }
+
+    // --- Network (Retrofit + Kotlinx Serialization) ---
+    single {
+        Json { ignoreUnknownKeys = true }
     }
 
     single {
@@ -39,37 +46,24 @@ val appModule = module {
             .build()
     }
 
-    single {
+    single<GoogleBooksApi> {
         get<Retrofit>().create(GoogleBooksApi::class.java)
     }
 
-    //  Room
-    single {
-        Room.databaseBuilder(
-            get(),
-            AppDatabase::class.java,
-            "booksapp.db"
-        ).build()
-    }
-
-    single { get<AppDatabase>().bookDao() }
-
-    //  Repositories
+    // --- Repos ---
     single { GoogleBooksRepository(api = get()) }
-    single { FeedRepository(dao = get(), remote = get()) }
+    single { FeedRepository(dao = get(), api = get()) }
 
     single { FirebaseAuthRepository() }
     single { FirebaseCommentsRepository() }
     single { FirebaseFavoritesRepository() }
 
-    // ---------- ViewModels ----------
+    // --- ViewModels ---
     viewModel { MainViewModel(get()) }
     viewModel { AuthViewModel(get()) }
-
-    viewModel { FeedViewModel(get()) }        // FeedRepository
-    viewModel { DetailsViewModel(get()) }     // FeedRepository
-    viewModel { SearchViewModel(get()) }      // GoogleBooksRepository
-
+    viewModel { FeedViewModel(get()) }
+    viewModel { DetailsViewModel(get()) }
     viewModel { CommentsViewModel(get()) }
     viewModel { ProfileViewModel(get()) }
+    viewModel { SearchViewModel(get()) }
 }

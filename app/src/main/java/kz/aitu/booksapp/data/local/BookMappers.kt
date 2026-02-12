@@ -2,7 +2,7 @@ package kz.aitu.booksapp.data.local
 
 import kz.aitu.booksapp.domain.model.Book
 
-fun BookEntity.toDomain() = Book(
+fun BookEntity.toDomain(): Book = Book(
     id = id,
     title = title,
     authors = authors,
@@ -10,11 +10,11 @@ fun BookEntity.toDomain() = Book(
     description = description
 )
 
-fun Book.toEntity(now: Long) = BookEntity(
+fun Book.toEntity(cachedAt: Long): BookEntity = BookEntity(
     id = id,
     title = title,
     authors = authors,
     thumbnailUrl = thumbnailUrl,
     description = description,
-    cachedAt = now
+    cachedAt = cachedAt
 )

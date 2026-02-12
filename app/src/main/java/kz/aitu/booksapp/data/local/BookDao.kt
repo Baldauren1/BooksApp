@@ -12,8 +12,11 @@ interface BookDao {
     @Query("SELECT * FROM books ORDER BY cachedAt DESC")
     fun observeAll(): Flow<List<BookEntity>>
 
+    @Query("SELECT COUNT(*) FROM books")
+    suspend fun count(): Int
+
     @Insert(onConflict = OnConflictStrategy.REPLACE)
-    suspend fun upsertAll(items: List<BookEntity>)
+    suspend fun insertAll(items: List<BookEntity>)
 
     @Query("DELETE FROM books")
     suspend fun clear()
