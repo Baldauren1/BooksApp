@@ -2,7 +2,6 @@ package kz.aitu.booksapp.ui.screens
 
 import androidx.compose.foundation.layout.*
 import androidx.compose.material3.*
-import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -13,23 +12,44 @@ import kz.aitu.booksapp.vm.DetailsViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun DetailsScreen(nav: NavController, bookId: String, vm: DetailsViewModel) {
-    val book by vm.book.collectAsState()
+    val state by vm.state.collectAsState()
 
     LaunchedEffect(bookId) { vm.load(bookId) }
 
     Scaffold(
         topBar = { TopAppBar(title = { Text("Details") }) }
     ) { padding ->
-        Column(Modifier.padding(padding).padding(16.dp), verticalArrangement = Arrangement.spacedBy(12.dp)) {
+        Column(
+            Modifier.padding(padding).padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(12.dp)
+        ) {
+            state.error?.let {
+                Text(it, color = MaterialTheme.colorScheme.error)
+                TextButton(onClick = vm::clearError) { Text("Dismiss") }
+            }
+
+            if (state.loading) {
+                LinearProgressIndicator(Modifier.fillMaxWidth())
+                return@Column
+            }
+
+            val book = state.book
             if (book == null) {
                 Text("Book not found", color = MaterialTheme.colorScheme.error)
                 Button(onClick = { nav.popBackStack() }) { Text("Back") }
                 return@Column
             }
 
-            Text(book!!.title, style = MaterialTheme.typography.headlineSmall)
-            Text("By: ${book!!.authors}")
-            Text(book!!.description)
+            Text(book.title, style = MaterialTheme.typography.headlineSmall)
+            Text("By: ${book.authors}")
+            Text(book.description)
+
+            Button(
+                onClick = vm::toggleFavorite,
+                modifier = Modifier.fillMaxWidth()
+            ) {
+                Text(if (state.isFavorite) "Remove from favorites" else "Add to favorites")
+            }
 
             Button(
                 onClick = { nav.navigate(Routes.comments(bookId)) },
