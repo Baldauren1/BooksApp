@@ -10,14 +10,11 @@ import kotlinx.coroutines.flow.Flow
 interface BookDao {
 
     @Query("SELECT * FROM books ORDER BY cachedAt DESC")
-    fun observeFeed(): Flow<List<BookEntity>>
-
-    @Query("SELECT * FROM books ORDER BY cachedAt DESC")
-    suspend fun getFeedOnce(): List<BookEntity>
+    fun observeAll(): Flow<List<BookEntity>>
 
     @Insert(onConflict = OnConflictStrategy.REPLACE)
     suspend fun upsertAll(items: List<BookEntity>)
 
     @Query("DELETE FROM books")
-    suspend fun clearAll()
+    suspend fun clear()
 }

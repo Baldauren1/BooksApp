@@ -1,36 +1,23 @@
 package kz.aitu.booksapp.data.remote
 
-import com.jakewharton.retrofit2.converter.kotlinx.serialization.asConverterFactory
-import kotlinx.serialization.json.Json
 import kz.aitu.booksapp.data.remote.dto.BookItemDto
 import kz.aitu.booksapp.domain.model.Book
-import okhttp3.MediaType.Companion.toMediaType
-import okhttp3.OkHttpClient
-import retrofit2.Retrofit
 
-class GoogleBooksRepository {
-
-    private val json = Json { ignoreUnknownKeys = true }
-
-    private val client = OkHttpClient.Builder().build()
-
-    private val retrofit = Retrofit.Builder()
-        .baseUrl("https://www.googleapis.com/books/v1/")
-        .client(client)
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-        .build()
-
-    private val api = retrofit.create(GoogleBooksApi::class.java)
-
+class GoogleBooksRepository(
+    private val api: GoogleBooksApi
+) {
     suspend fun search(query: String, page: Int, pageSize: Int = 10): PageResult {
         val startIndex = page * pageSize
-        val response = api.searchBooks(query = query, startIndex = startIndex, maxResults = pageSize)
+        val response = api.searchBooks(
+            query = query,
+            startIndex = startIndex,
+            maxResults = pageSize
+        )
 
         val items = response.items.orEmpty().map { it.toDomain() }
 
         val total = response.totalItems
         val endReached = startIndex + items.size >= total
-
 
         return PageResult(
             items = items,
@@ -49,8 +36,7 @@ class GoogleBooksRepository {
 private fun BookItemDto.toDomain(): Book {
     val info = volumeInfo
     val authorsStr = info?.authors?.joinToString(", ").orEmpty()
-    val thumb = info?.imageLinks?.thumbnail
-        ?.replace("http://", "https://")
+    val thumb = info?.imageLinks?.thumbnail?.replace("http://", "https://")
 
     return Book(
         id = id,

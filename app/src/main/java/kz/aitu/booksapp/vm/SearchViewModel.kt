@@ -4,6 +4,8 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import kz.aitu.booksapp.data.remote.GoogleBooksRepository
 import kz.aitu.booksapp.domain.model.Book
+import kotlinx.coroutines.Job
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
@@ -24,8 +26,19 @@ class SearchViewModel(
     private val _state = MutableStateFlow(SearchUiState())
     val state: StateFlow<SearchUiState> = _state
 
+    private var debounceJob: Job? = null
+
     fun onQueryChange(newQuery: String) {
         _state.value = _state.value.copy(query = newQuery)
+
+        debounceJob?.cancel()
+        debounceJob = viewModelScope.launch {
+            delay(500) // 0.5 s after each keystroke
+            val q = _state.value.query.trim()
+            if (q.length >= 2) {
+                searchFirstPage()
+            }
+        }
     }
 
     fun searchFirstPage() {
