@@ -28,7 +28,9 @@ class GoogleBooksRepository {
 
         val items = response.items.orEmpty().map { it.toDomain() }
 
-        val endReached = items.size < pageSize
+        val total = response.totalItems
+        val endReached = startIndex + items.size >= total
+
 
         return PageResult(
             items = items,

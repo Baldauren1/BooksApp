@@ -5,12 +5,13 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class BooksResponseDto(
+    @SerialName("totalItems") val totalItems: Int = 0,
     @SerialName("items") val items: List<BookItemDto>? = null
 )
 
 @Serializable
 data class BookItemDto(
-    @SerialName("id") val id: String,
+    @SerialName("id") val id: String = "",
     @SerialName("volumeInfo") val volumeInfo: VolumeInfoDto? = null
 )
 

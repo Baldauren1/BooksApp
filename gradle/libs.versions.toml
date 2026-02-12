@@ -9,7 +9,7 @@ activityCompose = "1.12.3"
 kotlin = "2.0.21"
 composeBom = "2024.09.00"
 
-ksp = "2.0.21-1.0.26"
+ksp = "2.0.21-1.0.28"
 
 room = "2.6.1"
 retrofit = "2.11.0"
@@ -21,6 +21,7 @@ navigationCompose = "2.8.2"
 coroutines = "1.9.0"
 firebaseBom = "33.6.0"
 googleServices = "4.4.4"
+material3 = "1.4.0"
 
 
 [libraries]
@@ -63,6 +64,7 @@ koin-compose = { group = "io.insert-koin", name = "koin-androidx-compose", versi
 firebase-bom = { group = "com.google.firebase", name = "firebase-bom", version.ref = "firebaseBom" }
 firebase-auth-ktx = { group = "com.google.firebase", name = "firebase-auth-ktx" }
 firebase-database-ktx = { group = "com.google.firebase", name = "firebase-database-ktx" }
+androidx-material3 = { group = "androidx.compose.material3", name = "material3", version.ref = "material3" }
 
 
 [plugins]
