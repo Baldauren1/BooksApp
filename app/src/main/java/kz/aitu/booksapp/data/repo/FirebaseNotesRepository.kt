@@ -7,6 +7,8 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kz.aitu.booksapp.domain.model.Note
+import android.net.Uri
+
 
 class FirebaseNotesRepository(
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance(),
@@ -14,8 +16,11 @@ class FirebaseNotesRepository(
 ) {
     private fun uid(): String = auth.currentUser?.uid ?: error("Not authenticated")
 
+    private fun key(bookId: String) = Uri.encode(bookId)
+
     private fun noteRef(bookId: String): DatabaseReference =
-        db.getReference("users").child(uid()).child("notes").child(bookId)
+        db.getReference("users").child(uid()).child("notes").child(key(bookId))
+
 
     fun observeNote(bookId: String): Flow<Note?> = callbackFlow {
         val ref = noteRef(bookId)

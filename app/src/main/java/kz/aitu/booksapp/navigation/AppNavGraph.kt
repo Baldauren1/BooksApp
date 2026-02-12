@@ -39,15 +39,17 @@ fun AppNavGraph() {
         }
 
         composable(Routes.Details) { backStack ->
-            val bookId = backStack.arguments?.getString("bookId")?.let(Uri::decode) ?: return@composable
-            val detailsVm: DetailsViewModel = koinViewModel()
-            DetailsScreen(nav, bookId, detailsVm)
+            val encoded = backStack.arguments?.getString("bookId") ?: return@composable
+            val bookId = Uri.decode(encoded)
+            val vm: DetailsViewModel = koinViewModel()
+            DetailsScreen(nav, bookId, vm)
         }
 
         composable(Routes.Comments) { backStack ->
-            val bookId = backStack.arguments?.getString("bookId")?.let(Uri::decode) ?: return@composable
-            val commentsVm: CommentsViewModel = koinViewModel()
-            CommentsScreen(nav, bookId, commentsVm)
+            val encoded = backStack.arguments?.getString("bookId") ?: return@composable
+            val bookId = Uri.decode(encoded)
+            val vm: CommentsViewModel = koinViewModel()
+            CommentsScreen(nav, bookId, vm)
         }
 
         composable(Routes.Search) {
@@ -56,7 +58,8 @@ fun AppNavGraph() {
         }
 
         composable(Routes.Note) { backStack ->
-            val bookId = Uri.decode(backStack.arguments?.getString("bookId") ?: return@composable)
+            val encoded = backStack.arguments?.getString("bookId") ?: return@composable
+            val bookId = Uri.decode(encoded)
             val vm: NoteViewModel = koinViewModel()
             NoteScreen(nav, bookId, vm)
         }
