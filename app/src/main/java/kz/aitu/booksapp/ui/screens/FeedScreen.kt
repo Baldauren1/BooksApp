@@ -15,30 +15,61 @@ import kz.aitu.booksapp.vm.FeedViewModel
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun FeedScreen(nav: NavController, vm: FeedViewModel) {
-    val books by vm.books.collectAsState()
+    val state by vm.state.collectAsState()
 
     Scaffold(
         topBar = {
             TopAppBar(
                 title = { Text("Books Feed") },
                 actions = {
-                    TextButton(onClick = { nav.navigate(Routes.Profile) }) { Text("Profile") }
                     TextButton(onClick = { nav.navigate(Routes.Search) }) { Text("Search") }
+                    TextButton(onClick = { nav.navigate(Routes.Profile) }) { Text("Profile") }
                 }
             )
         }
     ) { padding ->
-        LazyColumn(Modifier.padding(padding).fillMaxSize()) {
-            items(books) { book ->
-                ListItem(
-                    headlineContent = { Text(book.title) },
-                    supportingContent = { Text(book.authors) },
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .clickable { nav.navigate(Routes.details(book.id)) }
-                        .padding(horizontal = 8.dp)
+        Column(
+            modifier = Modifier.padding(padding).fillMaxSize()
+        ) {
+            if (state.offlineHint) {
+                Text(
+                    "Offline mode: showing cached feed",
+                    modifier = Modifier.fillMaxWidth().padding(12.dp),
+                    style = MaterialTheme.typography.bodyMedium
                 )
-                HorizontalDivider()
+            }
+
+            state.error?.let {
+                Text(it, color = MaterialTheme.colorScheme.error, modifier = Modifier.padding(12.dp))
+                TextButton(onClick = vm::clearError, modifier = Modifier.padding(horizontal = 12.dp)) {
+                    Text("Dismiss")
+                }
+            }
+
+            Button(
+                onClick = vm::refresh,
+                enabled = !state.loading,
+                modifier = Modifier.fillMaxWidth().padding(12.dp)
+            ) {
+                Text(if (state.loading) "Loading..." else "Refresh feed")
+            }
+
+            if (state.items.isEmpty() && state.loading) {
+                LinearProgressIndicator(modifier = Modifier.fillMaxWidth().padding(horizontal = 12.dp))
+            }
+
+            LazyColumn(Modifier.fillMaxSize()) {
+                items(state.items) { book ->
+                    ListItem(
+                        headlineContent = { Text(book.title) },
+                        supportingContent = { Text(book.authors) },
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .clickable { nav.navigate(Routes.details(book.id)) }
+                            .padding(horizontal = 8.dp)
+                    )
+                    HorizontalDivider()
+                }
             }
         }
     }
