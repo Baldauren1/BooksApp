@@ -1,37 +1,33 @@
-    package kz.aitu.booksapp.data.repo
+package kz.aitu.booksapp.data.repo
 
-    import kz.aitu.booksapp.data.local.BookDao
-    import kz.aitu.booksapp.data.local.BookEntity
-    import kz.aitu.booksapp.data.remote.GoogleBooksRepository
-    import kz.aitu.booksapp.domain.model.Book
-    import kotlinx.coroutines.flow.Flow
-    import kotlinx.coroutines.flow.map
+import kz.aitu.booksapp.data.local.BookDao
+import kz.aitu.booksapp.data.local.BookEntity
+import kz.aitu.booksapp.data.local.toEntity
+import kz.aitu.booksapp.data.remote.GoogleBooksRepository
+import kz.aitu.booksapp.domain.model.Book
 
-    class FeedRepository(
-        private val dao: BookDao,
-        private val api: GoogleBooksRepository
-    ) {
-        fun observeFeed(): Flow<List<Book>> =
-            dao.observeAll().map { list -> list.map { it.toDomain() } }
+class FeedRepository(
+    private val dao: BookDao,
+    private val api: GoogleBooksRepository
+) {
+    fun observeFeed() = dao.observeAll()
 
-        suspend fun isCacheEmpty(): Boolean = dao.count() == 0
+    suspend fun isCacheEmpty(): Boolean = dao.count() == 0
 
-        /**
-         * Sync policy (simple + reliable):
-         * - If online: fetch fresh feed and REPLACE by id (no duplicates).
-         * - If offline: exception -> UI shows cache (if exists).
-         */
-        suspend fun refreshFeed() {
-            val result = api.search(query = "subject:programming", page = 0, pageSize = 20)
-            val now = System.currentTimeMillis()
+    suspend fun refreshFeed() {
+        val now = System.currentTimeMillis()
 
-            val entities = result.items.map { it.toEntity(cachedAt = now) }
+        val pageResult: GoogleBooksRepository.PageResult =
+            api.search(query = "subject:programming", page = 0, pageSize = 20)
 
-            dao.insertAll(entities)
-        }
+        dao.insertAll(pageResult.items.map { book ->
+            book.toEntity(cachedAt = now)
+        })
     }
+}
 
-    private fun BookEntity.toDomain(): Book = Book(
+
+private fun BookEntity.toDomain(): Book = Book(
         id = id,
         title = title,
         authors = authors,

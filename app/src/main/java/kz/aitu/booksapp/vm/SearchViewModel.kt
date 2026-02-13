@@ -9,6 +9,9 @@ import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import kz.aitu.booksapp.data.local.BookDao
+import kz.aitu.booksapp.data.local.toEntity
+
 
 data class SearchUiState(
     val query: String = "",
@@ -20,8 +23,10 @@ data class SearchUiState(
 )
 
 class SearchViewModel(
-    private val repo: GoogleBooksRepository
+    private val repo: GoogleBooksRepository,
+    private val bookDao: BookDao
 ) : ViewModel() {
+
 
     private val _state = MutableStateFlow(SearchUiState())
     val state: StateFlow<SearchUiState> = _state
@@ -58,6 +63,8 @@ class SearchViewModel(
             )
             try {
                 val result = repo.search(q, page = 0)
+                val now = System.currentTimeMillis()
+                bookDao.insertAll(result.items.map { it.toEntity(cachedAt = now) })
                 _state.value = _state.value.copy(
                     items = result.items,
                     page = result.nextPage,
@@ -84,6 +91,8 @@ class SearchViewModel(
             _state.value = s.copy(loading = true, error = null)
             try {
                 val result = repo.search(q, page = s.page)
+                val now = System.currentTimeMillis()
+                bookDao.insertAll(result.items.map { it.toEntity(cachedAt = now) })
                 _state.value = _state.value.copy(
                     items = _state.value.items + result.items,
                     page = result.nextPage,

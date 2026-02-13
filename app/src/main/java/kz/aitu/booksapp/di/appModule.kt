@@ -65,7 +65,8 @@ val appModule = module {
     viewModel { AuthViewModel(get()) }
     viewModel { FeedViewModel(get()) }
     viewModel { CommentsViewModel(get()) }
-    viewModel { SearchViewModel(get()) }
+    viewModel { SearchViewModel(get(), get()) } // repo, dao
+
 
     viewModel { DetailsViewModel(get(), get()) } // BooksRepository, FirebaseFavoritesRepository
     viewModel { ProfileViewModel(get(), get(), get()) } // AuthRepo, FavoritesRepo, BookDao
