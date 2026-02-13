@@ -8,13 +8,14 @@ import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kz.aitu.booksapp.domain.model.Note
 import android.net.Uri
+import kz.aitu.booksapp.domain.AuthRequiredException
 
 
 class FirebaseNotesRepository(
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) {
-    private fun uid(): String = auth.currentUser?.uid ?: error("Not authenticated")
+    private fun uid(): String = auth.currentUser?.uid ?: throw AuthRequiredException()
 
     private fun key(bookId: String) = Uri.encode(bookId)
 

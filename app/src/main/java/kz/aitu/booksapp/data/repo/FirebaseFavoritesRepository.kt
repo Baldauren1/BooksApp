@@ -2,6 +2,7 @@ package kz.aitu.booksapp.data.repo
 
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.database.*
+import kz.aitu.booksapp.domain.AuthRequiredException
 import kotlinx.coroutines.channels.awaitClose
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
@@ -11,7 +12,7 @@ class FirebaseFavoritesRepository(
     private val db: FirebaseDatabase = FirebaseDatabase.getInstance(),
     private val auth: FirebaseAuth = FirebaseAuth.getInstance()
 ) {
-    private fun uid(): String = auth.currentUser?.uid ?: error("Not authenticated")
+    private fun uid(): String = auth.currentUser?.uid ?: throw AuthRequiredException()
 
     private fun favoritesRef(): DatabaseReference =
         db.getReference("users").child(uid()).child("favorites")

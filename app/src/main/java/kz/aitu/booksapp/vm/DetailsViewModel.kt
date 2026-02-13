@@ -31,14 +31,13 @@ class DetailsViewModel(
             try {
                 val entity = bookDao.getById(bookId)
                 val book = entity?.toDomain()
-
                 val fav = if (book != null) favRepo.isFavorite(bookId) else false
 
                 _state.value = DetailsUiState(
                     loading = false,
                     book = book,
                     isFavorite = fav,
-                    error = if (book == null) "Book not found in cache. Try refreshing feed." else null
+                    error = if (book == null) "Book not found in cache. Search again." else null
                 )
             } catch (e: Exception) {
                 _state.value = DetailsUiState(

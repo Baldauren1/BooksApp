@@ -2,16 +2,13 @@ package kz.aitu.booksapp.vm
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import kz.aitu.booksapp.data.local.BookDao
+import kz.aitu.booksapp.data.local.toEntity
 import kz.aitu.booksapp.data.remote.GoogleBooksRepository
 import kz.aitu.booksapp.domain.model.Book
-import kotlinx.coroutines.Job
-import kotlinx.coroutines.delay
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
-import kz.aitu.booksapp.data.local.BookDao
-import kz.aitu.booksapp.data.local.toEntity
-
 
 data class SearchUiState(
     val query: String = "",
@@ -27,29 +24,18 @@ class SearchViewModel(
     private val bookDao: BookDao
 ) : ViewModel() {
 
-
     private val _state = MutableStateFlow(SearchUiState())
     val state: StateFlow<SearchUiState> = _state
 
-    private var debounceJob: Job? = null
-
     fun onQueryChange(newQuery: String) {
         _state.value = _state.value.copy(query = newQuery)
-
-        debounceJob?.cancel()
-        debounceJob = viewModelScope.launch {
-            delay(500) // 0.5 s after each keystroke
-            val q = _state.value.query.trim()
-            if (q.length >= 2) {
-                searchFirstPage()
-            }
-        }
     }
 
     fun searchFirstPage() {
         val q = _state.value.query.trim()
-        if (q.isEmpty()) {
-            _state.value = _state.value.copy(error = "Search query cannot be empty")
+
+        if (q.length < 2) {
+            _state.value = _state.value.copy(error = "Enter at least 2 characters")
             return
         }
 
@@ -63,8 +49,11 @@ class SearchViewModel(
             )
             try {
                 val result = repo.search(q, page = 0)
+
+                // CACHE results so Details can open from Room
                 val now = System.currentTimeMillis()
                 bookDao.insertAll(result.items.map { it.toEntity(cachedAt = now) })
+
                 _state.value = _state.value.copy(
                     items = result.items,
                     page = result.nextPage,
@@ -85,14 +74,17 @@ class SearchViewModel(
         if (s.loading || s.endReached) return
 
         val q = s.query.trim()
-        if (q.isEmpty()) return
+        if (q.length < 2) return
 
         viewModelScope.launch {
             _state.value = s.copy(loading = true, error = null)
             try {
                 val result = repo.search(q, page = s.page)
+
+                // CACHE "load more" results too
                 val now = System.currentTimeMillis()
                 bookDao.insertAll(result.items.map { it.toEntity(cachedAt = now) })
+
                 _state.value = _state.value.copy(
                     items = _state.value.items + result.items,
                     page = result.nextPage,

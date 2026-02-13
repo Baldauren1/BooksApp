@@ -17,6 +17,12 @@ android {
         versionCode = 1
         versionName = "1.0"
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        // Optional: set in local.properties as:
+        // GBOOKS_KEY=YOUR_KEY
+        // (Do NOT commit your key.)
+        val gbooksKey = (project.findProperty("GBOOKS_KEY") as String?) ?: ""
+        buildConfigField("String", "GBOOKS_KEY", "\"$gbooksKey\"")
     }
 
     compileOptions {
@@ -24,7 +30,21 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-    buildFeatures { compose = true }
+
+    buildTypes {
+        debug {
+            buildConfigField("Boolean", "LOG_ENABLED", "true")
+        }
+        release {
+            buildConfigField("Boolean", "LOG_ENABLED", "false")
+            isMinifyEnabled = false
+        }
+    }
+
+    buildFeatures {
+        compose = true
+        buildConfig = true
+    }
 }
 
 dependencies {

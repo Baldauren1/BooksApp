@@ -25,7 +25,7 @@ class FeedRepository(
         val pageResult = api.search(
             query = "subject:programming",
             page = 0,
-            pageSize = 20
+            pageSize = 10
         )
 
         dao.insertAll(pageResult.items.map { it.toEntity(cachedAt = now) })

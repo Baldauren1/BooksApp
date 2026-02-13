@@ -41,11 +41,15 @@ class FeedViewModel(
     private fun initialLoad() {
         viewModelScope.launch {
             try {
+                // IMPORTANT: only hit the network on first run (when cache is empty).
+                // This avoids spamming Google Books API and hitting HTTP 429.
                 if (repo.isCacheEmpty()) {
                     _state.value = _state.value.copy(loading = true)
+                    repo.refreshFeed()
+                    _state.value = _state.value.copy(error = null, offlineHint = false)
+                } else {
+                    _state.value = _state.value.copy(loading = false, error = null)
                 }
-                repo.refreshFeed()
-                _state.value = _state.value.copy(error = null, offlineHint = false)
             } catch (e: Exception) {
                 val hasCache = _state.value.items.isNotEmpty()
                 _state.value = _state.value.copy(

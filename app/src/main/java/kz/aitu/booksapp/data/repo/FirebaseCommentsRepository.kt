@@ -11,6 +11,7 @@ import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.callbackFlow
 import kotlinx.coroutines.tasks.await
 import kz.aitu.booksapp.domain.model.Comment
+import kz.aitu.booksapp.domain.AuthRequiredException
 import java.util.UUID
 
 class FirebaseCommentsRepository(
@@ -37,7 +38,7 @@ class FirebaseCommentsRepository(
     }
 
     suspend fun addComment(bookId: String, text: String) {
-        val user = auth.currentUser ?: error("Not authenticated")
+        val user = auth.currentUser ?: throw AuthRequiredException()
         val id = UUID.randomUUID().toString()
 
         val comment = Comment(
@@ -53,11 +54,11 @@ class FirebaseCommentsRepository(
     }
 
     suspend fun deleteComment(bookId: String, commentId: String) {
-        val user = auth.currentUser ?: error("Not authenticated")
+        val user = auth.currentUser ?: throw AuthRequiredException()
         val ref = commentsRef(bookId).child(commentId)
         val snap = ref.get().await()
         val c = snap.getValue(Comment::class.java) ?: return
-        if (c.userId != user.uid) error("You can delete only your own comments")
+        if (c.userId != user.uid) throw IllegalStateException("You can delete only your own comments")
         ref.removeValue().await()
     }
 }

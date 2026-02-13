@@ -68,9 +68,9 @@ val appModule = module {
     viewModel { SearchViewModel(get(), get()) } // repo, dao
 
 
-    viewModel { DetailsViewModel(get(), get()) } // BooksRepository, FirebaseFavoritesRepository
+    // Details uses cached BookDao + Favorites (Firebase)
+    viewModel { DetailsViewModel(get(), get()) }
     viewModel { ProfileViewModel(get(), get(), get()) } // AuthRepo, FavoritesRepo, BookDao
 
     viewModel { kz.aitu.booksapp.vm.NoteViewModel(get()) }
-    viewModel { DetailsViewModel(get(), get()) } // BookDao, FirebaseFavoritesRepository
 }
