@@ -47,7 +47,6 @@ class FeedViewModel(
                 repo.refreshFeed()
                 _state.value = _state.value.copy(error = null, offlineHint = false)
             } catch (e: Exception) {
-                // если кэш есть — просто показываем оффлайн hint
                 val hasCache = _state.value.items.isNotEmpty()
                 _state.value = _state.value.copy(
                     loading = false,
