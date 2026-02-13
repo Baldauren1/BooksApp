@@ -14,13 +14,15 @@ android {
         applicationId = "kz.aitu.booksapp"
         minSdk = 26
         targetSdk = 36
-        versionCode = 1
-        versionName = "1.0"
+
+        // FINAL: bump version
+        versionCode = 2
+        versionName = "1.1.0"
+
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        // Optional: set in local.properties as:
+        //  Optional: set in local.properties as:
         // GBOOKS_KEY=YOUR_KEY
-        // (Do NOT commit your key.)
         val gbooksKey = (project.findProperty("GBOOKS_KEY") as String?) ?: ""
         buildConfigField("String", "GBOOKS_KEY", "\"$gbooksKey\"")
     }
@@ -30,14 +32,19 @@ android {
         targetCompatibility = JavaVersion.VERSION_17
     }
 
-
     buildTypes {
         debug {
             buildConfigField("Boolean", "LOG_ENABLED", "true")
         }
         release {
             buildConfigField("Boolean", "LOG_ENABLED", "false")
+
+            //  You can keep minify off for speed, but still include proguard files (release-ready)
             isMinifyEnabled = false
+            proguardFiles(
+                getDefaultProguardFile("proguard-android-optimize.txt"),
+                "proguard-rules.pro"
+            )
         }
     }
 
@@ -45,9 +52,22 @@ android {
         compose = true
         buildConfig = true
     }
+
+    //  Helps avoid META-INF conflicts sometimes
+    packaging {
+        resources {
+            excludes += setOf(
+                "META-INF/LICENSE*",
+                "META-INF/NOTICE*",
+                "META-INF/AL2.0",
+                "META-INF/LGPL2.1"
+            )
+        }
+    }
 }
 
 dependencies {
+    // --- App deps  ---
     implementation("androidx.navigation:navigation-compose:2.8.2")
     implementation("androidx.lifecycle:lifecycle-viewmodel-compose:2.10.0")
 
@@ -78,4 +98,10 @@ dependencies {
 
     // Images
     implementation("io.coil-kt:coil-compose:2.7.0")
+
+    // FINAL: Unit tests (for 10 unit tests)
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlinx:kotlinx-coroutines-test:1.9.0")
+
+    testImplementation("com.google.truth:truth:1.4.4")
 }

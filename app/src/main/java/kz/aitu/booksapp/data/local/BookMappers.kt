@@ -1,5 +1,6 @@
 package kz.aitu.booksapp.data.local
 
+import BookEntity
 import kz.aitu.booksapp.domain.model.Book
 
 fun BookEntity.toDomain(): Book = Book(

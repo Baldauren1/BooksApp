@@ -21,6 +21,8 @@ local.properties
 .idea/vcs.xml
 .idea/shelf/
 
+app/google-services.json
+
 *.class
 *.jar
 *.war

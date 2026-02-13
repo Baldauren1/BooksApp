@@ -1,9 +1,11 @@
-package kz.aitu.booksapp.data.local
-
 import androidx.room.Entity
+import androidx.room.Index
 import androidx.room.PrimaryKey
 
-@Entity(tableName = "books")
+@Entity(
+    tableName = "books",
+    indices = [Index(value = ["cachedAt"])]
+)
 data class BookEntity(
     @PrimaryKey val id: String,
     val title: String,
