@@ -1,4 +1,4 @@
-## BooksApp (Endterm → Final Add-on)
+## BooksApp
 
 BooksApp is an Android application built with Kotlin + Jetpack Compose.
 It supports book search using Google Books API, local caching via Room,
@@ -61,6 +61,10 @@ Security rules assumptions are documented in `/docs/FIREBASE_RULES.md` (Final re
 ## API Used
 - Google Books API (public search endpoint via Retrofit).
 No paid API key is required for basic search functionality.
+
+## Demo Creditials
+- email: test@example.com
+- password: 159951
 
 ## Project Structure
 - `app/src/main/java/kz/aitu/booksapp/`
